@@ -1,18 +1,14 @@
 package practice;
 
-import java.util.Scanner;
+import java.util.*;
 
 class Player {
 	String name;
 	int answer;
 	int correctAnswer;
 
-	public Player() {
-	}
-
 	public Player(String name) {
 		this.name = name;
-		correctAnswer = 0;
 	}
 }
 
@@ -21,45 +17,68 @@ public class NumberExceptionGame {
 		Scanner sc = new Scanner(System.in);
 		System.out.print("게임에 참여할 선수들 이름 >> ");
 		String[] players = sc.nextLine().split(" ");
-		Player[] player = new Player[players.length];
+		List<Player> playerList = new ArrayList<>();
 
-		// 각 플레이어 이름들로 객체 초기화
-		for (int i = 0; i < players.length; i++) {
-			player[i] = new Player(players[i]);
+		for (String name : players)
+			playerList.add(new Player(name));
+
+		// 초기 정답 선택
+		for (Player p : playerList) {
+			System.out.print("[" + p.name + "] 정수 선택(1~10) >> ");
+			p.answer = Integer.parseInt(sc.nextLine());
 		}
 
-		// 각자 플레이어 마다 정수 선택 후 answer 필드 초기화
-		for (Player val : player) {
-			System.out.print("[" + val.name + "] 정수 선택(1~10) >> ");
-			val.answer = Integer.parseInt(sc.nextLine());
-		}
-		
-		System.out.print("Enter키 입력 >> ");
-		sc.nextLine(); // 이 엔터 입력 후 15개의 랜덤한 정수 생성 후 출력
+		// 한 명 남을 때까지 반복
+		while (playerList.size() > 1) {
+			System.out.print("Enter키 입력 >> ");
+			sc.nextLine();
 
-		// 15개의 난수 생성
-		int[] random = new int[15];
-		for (int i = 0; i < 15; i++) {
-			random[i] = (int) ((Math.random() * 15) + 1); // 1~15 사이의 랜덤한 정수 값 삽입
-		}
-		// 이후 난수 15개 출력
-		for (int val : random)
-			System.out.print(val + " ");
-		
-		// 맞춘 개수 계산
-		for (int i = 0; i < player.length; i++) {
-			for (int j = 0; j < 15; j++) {
-				if (player[i].answer == random[j]) {
-					player[i].correctAnswer++;
+			// 난수 15개 생성
+			int[] random = new int[15];
+			for (int i = 0; i < 15; i++)
+				random[i] = (int) (Math.random() * 15 + 1);
+
+			// 출력
+			System.out.print("이번 라운드 난수 : ");
+			for (int val : random)
+				System.out.print(val + " ");
+			System.out.println();
+
+			// 맞춘 개수 계산
+			for (Player p : playerList) {
+				p.correctAnswer = 0;
+				for (int val : random) {
+					if (p.answer == val)
+						p.correctAnswer++;
 				}
 			}
-		}
-		
-		System.out.println();
-		// 맞춘 개수 출력
-		for (Player val : player) {
-			System.out.println("[" + val.name + "] 맞춘 개수 : " + val.correctAnswer);
+
+			// 최고 점수 계산
+			int maxCorrect = playerList.stream().mapToInt(p -> p.correctAnswer).max().orElse(0);
+
+			// 승자 출력
+			System.out.print("이번 라운드 승자(제외됨): ");
+			for (Player p : playerList) {
+				if (p.correctAnswer == maxCorrect) {
+					System.out.print("[" + p.name + "] ");
+				}
+			}
+			System.out.println();
+
+			// 승자 제거 (== 최고점자 제거)
+			playerList.removeIf(p -> p.correctAnswer == maxCorrect);
+
+			// 남은 사람 출력
+			System.out.println("남은 플레이어: ");
+			for (Player p : playerList) {
+				System.out.print("[" + p.name + "] ");
+			}
+			System.out.println("\n-----------------------");
 		}
 
+		// 마지막 남은 사람 = 패자
+		if (playerList.size() == 1) {
+			System.out.println("최종 패자 : [" + playerList.get(0).name + "]");
+		}
 	}
 }
