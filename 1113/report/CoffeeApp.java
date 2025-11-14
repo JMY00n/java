@@ -88,7 +88,7 @@ public class CoffeeApp extends JFrame {
 
 	class SouthPanel extends JPanel {
 		private static final long serialVersionUID = 1L;
-		
+
 		public SouthPanel() {
 			JButton blackBtn = new JButton("Black Coffee");
 			JButton sugarBtn = new JButton("Sugar Coffee");
@@ -129,7 +129,7 @@ public class CoffeeApp extends JFrame {
 				h[0] -= max * 0.1;
 				h[1] -= max * 0.2;
 				h[2] -= max * 0.2;
-				JOptionPane.showMessageDialog(null, "따뜻한 커피 한잔!");
+				JOptionPane.showMessageDialog(null, "주문하신 Black Coffee 나왔습니다.");
 				break;
 
 			case "sugarBtn":
@@ -137,6 +137,7 @@ public class CoffeeApp extends JFrame {
 				h[1] -= max * 0.2;
 				h[2] -= max * 0.2;
 				h[3] -= max * 0.2;
+				JOptionPane.showMessageDialog(null, "주문하신 Sugar Coffee 나왔습니다.");
 				break;
 			case "dabangBtn":
 				h[0] -= max * 0.1;
@@ -144,6 +145,7 @@ public class CoffeeApp extends JFrame {
 				h[2] -= max * 0.2;
 				h[3] -= max * 0.2;
 				h[4] -= max * 0.2;
+				JOptionPane.showMessageDialog(null, "주문하신 Dabang Coffee 나왔습니다.");
 				break;
 			case "resetBtn":
 				for (int i = 0; i < h.length; i++) {
@@ -152,8 +154,19 @@ public class CoffeeApp extends JFrame {
 				break;
 
 			}
-	
+
 			boolean shortage = false;
+
+			for (int i = 0; i < h.length; i++) {
+				if (h[i] <= 0) {
+					shortage = true;
+					break; // 하나라도 재료가 부족하면 더 검사할 필요 없음
+				}
+			}
+			if (shortage) {
+				JOptionPane.showMessageDialog(null, "재료가 부족합니다.");
+			}
+			
 			// 높이 음수 방지
 			for (int i = 0; i < h.length; i++) {
 				if (h[i] < 0) {
@@ -161,10 +174,7 @@ public class CoffeeApp extends JFrame {
 					shortage = true;
 				}
 			}
-			
-			if (shortage) {
-				JOptionPane.showMessageDialog(null, "재료가 부족합니다.");
-			}
+
 			cp.repaint();
 		}
 
