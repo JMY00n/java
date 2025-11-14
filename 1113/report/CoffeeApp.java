@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class CoffeeApp extends JFrame {
@@ -87,7 +88,7 @@ public class CoffeeApp extends JFrame {
 
 	class SouthPanel extends JPanel {
 		private static final long serialVersionUID = 1L;
-
+		
 		public SouthPanel() {
 			JButton blackBtn = new JButton("Black Coffee");
 			JButton sugarBtn = new JButton("Sugar Coffee");
@@ -111,6 +112,7 @@ public class CoffeeApp extends JFrame {
 	class MyActionListener implements ActionListener {
 		private CenterPanel cp;
 		private String type;
+		JOptionPane jp = new JOptionPane();
 
 		public MyActionListener(CenterPanel cp, String type) {
 			this.cp = cp;
@@ -127,6 +129,7 @@ public class CoffeeApp extends JFrame {
 				h[0] -= max * 0.1;
 				h[1] -= max * 0.2;
 				h[2] -= max * 0.2;
+				JOptionPane.showMessageDialog(null, "따뜻한 커피 한잔!");
 				break;
 
 			case "sugarBtn":
@@ -149,10 +152,18 @@ public class CoffeeApp extends JFrame {
 				break;
 
 			}
+	
+			boolean shortage = false;
 			// 높이 음수 방지
 			for (int i = 0; i < h.length; i++) {
-				if (h[i] < 0)
+				if (h[i] < 0) {
 					h[i] = 0;
+					shortage = true;
+				}
+			}
+			
+			if (shortage) {
+				JOptionPane.showMessageDialog(null, "재료가 부족합니다.");
 			}
 			cp.repaint();
 		}
